@@ -1,4 +1,5 @@
 "use client";
+import { MyDashboard } from "@/components/component/dashboard";
 import userAtom from "@/src/atoms/userAtom";
 import { useRouter } from "next/navigation";
 import React, { useLayoutEffect } from "react";
@@ -9,7 +10,6 @@ const Dashboard = () => {
   const user = useRecoilValue(userAtom);
 
   useLayoutEffect(() => {
-    // Check if user is an empty object and redirect to "/" route if true
     if (Object.keys(user).length === 0 && user.constructor === Object) {
       router.push("/");
     }
@@ -17,7 +17,11 @@ const Dashboard = () => {
 
   console.log("User name", user);
 
-  return <h1>Dashboard</h1>;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <MyDashboard />
+    </div>
+  );
 };
 
 export default Dashboard;
