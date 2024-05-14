@@ -5,8 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import userAtom from "@/src/atoms/userAtom";
 
 export function MyDashboard() {
+  const studentInfo = useRecoilValue(userAtom);
+  console.log("from recoil", studentInfo);
+  const studentId = studentInfo._id;
   const [imageFile, setImageFile] = useState("");
 
   const handleChange = (e: any) => {
@@ -15,14 +20,13 @@ export function MyDashboard() {
   };
   const handleClick = async () => {
     try {
-      console.log("rendi rajit");
       const formData = new FormData();
       formData.append("image", imageFile);
       formData.append(
         "jsonData",
         JSON.stringify({
           classroomId: "6640fbd74ca657ece9b9d5ea",
-          studentId: "6642594aee1e7d26fa1fe392",
+          studentId: studentId,
         })
       ); // Convert JSON object to string
 
