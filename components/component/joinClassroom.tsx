@@ -28,33 +28,33 @@ export function MyDashboard() {
   const handleClick = async () => {
     console.log("classroomCode", classroomCode);
     console.log(imageFile);
-    // try {
-    //   const formData = new FormData();
-    //   formData.append("image", imageFile);
-    //   formData.append(
-    //     "jsonData",
-    //     JSON.stringify({
-    //       classroomId: classroomCode,
-    //       studentId: studentId,
-    //     })
-    //   ); // Convert JSON object to string
+    try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      formData.append(
+        "jsonData",
+        JSON.stringify({
+          classroomId: classroomCode,
+          studentId: studentId,
+        })
+      ); // Convert JSON object to string
 
-    //   const response = await axios.post(
-    //     "http://127.0.0.1:5000/image/individual",
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
+      const response = await axios.post(
+        "http://127.0.0.1:5000/image/individual",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-    //   console.log("Upload successful:", response.data);
-    //   alert("Upload successful!");
-    // } catch (error) {
-    //   console.error("Error uploading:", error);
-    //   alert("Upload failed. Please try again.");
-    // }
+      console.log("Upload successful:", response.data);
+      alert("Upload successful!");
+    } catch (error) {
+      console.error("Error uploading:", error);
+      alert("Upload failed. Please try again.");
+    }
   };
 
   return (
