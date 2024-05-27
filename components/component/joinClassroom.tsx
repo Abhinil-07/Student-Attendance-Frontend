@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import axios from "axios";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "@/src/atoms/userAtom";
 
 export function MyDashboard() {
   const studentInfo = useRecoilValue(userAtom);
+  const setStudentInfo = useSetRecoilState(userAtom);
   console.log("from recoil", studentInfo);
   const studentId = studentInfo._id;
   const [imageFile, setImageFile] = useState("");
@@ -36,8 +37,9 @@ export function MyDashboard() {
         JSON.stringify({
           classroomId: classroomCode,
           studentId: studentId,
+          name: studentInfo.username,
         })
-      ); // Convert JSON object to string
+      );
 
       const response = await axios.post(
         "http://127.0.0.1:5000/image/individual",
@@ -49,11 +51,53 @@ export function MyDashboard() {
         }
       );
 
+      const embeddingId = response.data.embeddingId;
+      console.log("renid", embeddingId); // Assuming the response contains the embedding ID
+
+      // Update Recoil state
+      const updatedStudentInfo = { ...studentInfo, embeddings_id: embeddingId };
+      setStudentInfo(updatedStudentInfo);
+
+      // Update local storage
+      localStorage.setItem("user-info", JSON.stringify(updatedStudentInfo));
+
       console.log("Upload successful:", response.data);
       alert("Upload successful!");
     } catch (error) {
       console.error("Error uploading:", error);
       alert("Upload failed. Please try again.");
+    }
+  };
+
+  const handleAlreadyExistingClick = async () => {
+    console.log("studentId", studentId);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/enroll",
+        {
+          classroomId: classroomCode,
+          studentId: studentId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Enroll successful:", response.data);
+      alert("Enroll successful!");
+    } catch (error) {
+      console.error("Error enrolling:", error);
+      alert("Enrollment failed. Please try again.");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (studentInfo.embeddings_id === null) {
+      handleClick();
+    } else {
+      handleAlreadyExistingClick();
     }
   };
 
@@ -75,8 +119,8 @@ export function MyDashboard() {
             <Label htmlFor="picture">Picture</Label>
             <Input onChange={handleImageChange} id="picture" type="file" />
           </div>
-          <Button onClick={handleClick} className="w-full">
-            Upload
+          <Button onClick={handleSubmit} className="w-full">
+            Submit
           </Button>
         </div>
       </main>
