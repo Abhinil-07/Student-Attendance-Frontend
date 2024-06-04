@@ -7,11 +7,12 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export function Login() {
   const router = useRouter();
   const setUser = useSetRecoilState(userAtom);
+  const user = useRecoilValue(userAtom);
   const [inputs, setInputs] = useState<TLogin>({ email: "", password: "" });
   const handleLogin = async (e: any) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ export function Login() {
     console.log(response.data);
     localStorage.setItem("user-info", JSON.stringify(response.data.user));
     setUser(response.data.user);
+    console.log("login ke pehele", user);
     router.push("/dashboard");
   };
   return (
